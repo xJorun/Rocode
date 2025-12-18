@@ -66,7 +66,13 @@ app.get('/me', authMiddleware, (req, res) => {
 app.use(SentryHandlers.errorHandler())
 app.use(errorHandler)
 
-app.listen(port, () => {
-  logger.info(`API server running on port ${port}`)
-})
+// Export for Vercel serverless functions
+export default app
+
+// Only start server if not in serverless environment
+if (process.env.VERCEL !== '1' && !process.env.VERCEL_ENV) {
+  app.listen(port, () => {
+    logger.info(`API server running on port ${port}`)
+  })
+}
 
