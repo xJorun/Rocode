@@ -1,17 +1,39 @@
 import rateLimit from 'express-rate-limit'
-import RedisStore from 'rate-limit-redis'
+import RedisStore, { type SendCommandFn } from 'rate-limit-redis'
 import Redis from 'ioredis'
 
 const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379')
 
-// Type helper for Redis reply
-type RedisReply = string | number | Buffer | null | undefined
-
 // Helper function to properly type the sendCommand
-const createSendCommand = () => {
-  return async (...args: string[]): Promise<RedisReply> => {
+const createSendCommand = (): SendCommandFn => {
+  return async (...args: string[]) => {
     const result = await redis.call(args[0], ...args.slice(1))
-    return result as RedisReply
+    // Convert result to match RedisReply type (boolean | number | string | array of those)
+    // Handle null/undefined by returning a default value
+    if (result === null || result === undefined) {
+      return 0 // Return a number as default
+    }
+    // Convert Buffer to string
+    if (Buffer.isBuffer(result)) {
+      return result.toString()
+    }
+    // For arrays, convert each element
+    if (Array.isArray(result)) {
+      return result.map(item => {
+        if (Buffer.isBuffer(item)) return item.toString()
+        if (item === null || item === undefined) return 0
+        // Ensure item is boolean, number, or string
+        if (typeof item === 'boolean' || typeof item === 'number' || typeof item === 'string') {
+          return item
+        }
+        return String(item)
+      })
+    }
+    // Ensure result is boolean, number, or string
+    if (typeof result === 'boolean' || typeof result === 'number' || typeof result === 'string') {
+      return result
+    }
+    return String(result)
   }
 }
 
