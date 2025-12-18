@@ -148,7 +148,10 @@ router.post('/orgs/:id/assessments', async (req, res) => {
         name: input.name,
         description: input.description,
         timeLimit: input.timeLimit,
-        settings: input.settings,
+        settings: {
+          ...input.settings,
+          maxAttempts: input.settings.maxAttempts ?? null,
+        },
       })
       .returning()
 
