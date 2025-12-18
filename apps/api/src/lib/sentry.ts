@@ -23,20 +23,19 @@ export function initSentry() {
 }
 
 export function getSentryHandlers() {
-  if (!sentryInitialized) {
-    return {
-      requestHandler: () => (req: any, res: any, next: any) => next(),
-      tracingHandler: () => (req: any, res: any, next: any) => next(),
-      errorHandler: () => (err: any, req: any, res: any, next: any) => next(err),
+  // For Sentry v8+ with expressIntegration, request/tracing are handled automatically
+  // We provide no-op middleware for request/tracing and a proper error handler
+  const errorHandlerMiddleware = (err: any, req: any, res: any, next: any) => {
+    if (sentryInitialized) {
+      Sentry.captureException(err)
     }
+    next(err)
   }
-  
-  // For Sentry v8+, use setupExpressErrorHandler and setupExpressRequestDataHandler
-  // But since we're using expressIntegration, we just need the error handler
+
   return {
-    requestHandler: Sentry.setupExpressRequestDataHandler,
-    tracingHandler: () => (req: any, res: any, next: any) => next(),
-    errorHandler: Sentry.setupExpressErrorHandler,
+    requestHandler: () => (req: any, res: any, next: any) => next(), // No-op, handled by expressIntegration
+    tracingHandler: () => (req: any, res: any, next: any) => next(), // No-op, handled by expressIntegration
+    errorHandler: () => errorHandlerMiddleware,
   }
 }
 
