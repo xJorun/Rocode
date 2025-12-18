@@ -2,27 +2,30 @@
   "name": "rocode",
   "version": "1.0.0",
   "private": true,
+  "packageManager": "pnpm@9.0.0",
   "workspaces": [
     "apps/*",
     "packages/*"
   ],
   "scripts": {
-    "dev": "npm run dev --workspaces --if-present",
-    "dev:web": "npm run dev --workspace=@rocode/web",
-    "dev:api": "npm run dev --workspace=@rocode/api",
-    "build": "npm run build --workspaces --if-present",
-    "build:shared": "npm run build --workspace=@rocode/shared",
-    "build:ui": "npm run build --workspace=@rocode/ui",
-    "typecheck": "npm run typecheck --workspaces --if-present",
-    "db:migrate": "npm run db:migrate --workspace=@rocode/api",
-    "db:seed": "npm run db:seed --workspace=@rocode/api",
-    "db:studio": "npm run db:studio --workspace=@rocode/api"
+    "dev": "turbo run dev",
+    "dev:web": "pnpm --filter @rocode/web dev",
+    "dev:api": "pnpm --filter @rocode/api dev",
+    "build": "turbo run build",
+    "build:shared": "pnpm --filter @rocode/shared build",
+    "build:ui": "pnpm --filter @rocode/ui build",
+    "typecheck": "turbo run typecheck",
+    "db:migrate": "pnpm --filter @rocode/api db:migrate",
+    "db:seed": "pnpm --filter @rocode/api db:seed",
+    "db:studio": "pnpm --filter @rocode/api db:studio"
   },
   "devDependencies": {
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "turbo": "^2.0.0"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
   }
 }
 
