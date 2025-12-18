@@ -1,0 +1,28 @@
+{
+  "name": "rocode",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "dev:web": "npm run dev --workspace=@rocode/web",
+    "dev:api": "npm run dev --workspace=@rocode/api",
+    "build": "npm run build --workspaces --if-present",
+    "build:shared": "npm run build --workspace=@rocode/shared",
+    "build:ui": "npm run build --workspace=@rocode/ui",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "db:migrate": "npm run db:migrate --workspace=@rocode/api",
+    "db:seed": "npm run db:seed --workspace=@rocode/api",
+    "db:studio": "npm run db:studio --workspace=@rocode/api"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
+

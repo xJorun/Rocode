@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: rocode-postgres-dev
+    environment:
+      POSTGRES_USER: rocode
+      POSTGRES_PASSWORD: rocode
+      POSTGRES_DB: rocode
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    container_name: rocode-redis-dev
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres_dev_data:
+
